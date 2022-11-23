@@ -28,6 +28,7 @@ RUN apt-get update \
  && chmod 0755 /usr/local/bin/kubectl \
  && curl -sSL -o terraform.zip "https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_amd64.zip" \
  && unzip terraform.zip -d /usr/local/bin \
+ && rm -f terraform.zip \
  && chmod 0755 /usr/local/bin/terraform
 
 USER jenkins
