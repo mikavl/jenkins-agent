@@ -21,6 +21,7 @@ RUN apt-get update \
       python3-packaging \
       python3-resolvelib \
       python3-yaml \
+      unzip \
  && rm -rf /var/lib/apt/lists/* \
  && git -C /opt clone --branch "v${ansible_version}" --depth 1 "${ansible_repository}" \
  && curl -sSL -o /usr/local/bin/kubectl "https://dl.k8s.io/release/v${kubectl_version}/bin/linux/amd64/kubectl" \
