@@ -12,6 +12,7 @@ USER root
 
 RUN apt-get update \
  && apt-get install --assume-yes --no-install-recommends \
+      git-crypt \
       python-is-python3 \
       python3 \
       python3-cryptography \
