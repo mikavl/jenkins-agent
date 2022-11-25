@@ -1,5 +1,7 @@
 FROM jenkins/inbound-agent:latest
 
+ARG TARGETARCH
+
 ARG ansible_repository="https://github.com/ansible/ansible.git"
 ARG ansible_version="2.12.10"
 ARG kubectl_version="1.25.4"
@@ -24,11 +26,14 @@ RUN apt-get update \
       unzip \
  && rm -rf /var/lib/apt/lists/* \
  && git -C /opt clone --branch "v${ansible_version}" --depth 1 "${ansible_repository}" \
- && curl -sSL -o /usr/local/bin/kubectl "https://dl.k8s.io/release/v${kubectl_version}/bin/linux/amd64/kubectl" \
+ && curl -sSL -o /usr/local/bin/kubectl "https://dl.k8s.io/release/v${kubectl_version}/bin/linux/${TARGETARCH}/kubectl" \
  && chmod 0755 /usr/local/bin/kubectl \
- && curl -sSL -o terraform.zip "https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_amd64.zip" \
+ && curl -sSL -o terraform.zip "https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_${TARGETARCH}.zip" \
  && unzip terraform.zip -d /usr/local/bin \
  && rm -f terraform.zip \
- && chmod 0755 /usr/local/bin/terraform
+ && chmod 0755 /usr/local/bin/terraform \
+ && install -d -m 0700 -o jenkins -g jenkins /home/jenkins/.terraform.d /home/jenkins/.terraform.d/plugin-cache
+
+COPY --chown=jenkins:jenkins .terraformrc /home/jenkins
 
 USER jenkins
