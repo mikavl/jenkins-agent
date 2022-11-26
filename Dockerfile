@@ -4,6 +4,7 @@ ARG TARGETARCH
 
 ARG ansible_repository="https://github.com/ansible/ansible.git"
 ARG ansible_version="2.12.10"
+ARG helm_version="3.10.2"
 ARG kubectl_version="1.25.4"
 ARG terraform_version="1.3.5"
 
@@ -32,7 +33,12 @@ RUN apt-get update \
  && unzip terraform.zip -d /usr/local/bin \
  && rm -f terraform.zip \
  && chmod 0755 /usr/local/bin/terraform \
- && install -d -m 0700 -o jenkins -g jenkins /home/jenkins/.terraform.d /home/jenkins/.terraform.d/plugin-cache
+ && install -d -m 0700 -o jenkins -g jenkins /home/jenkins/.terraform.d /home/jenkins/.terraform.d/plugin-cache \
+ && curl -sSL -o helm.tar.gz "https://get.helm.sh/helm-v${helm_version}-linux-${TARGETARCH}.tar.gz" \
+ && tar -xvf helm.tar.gz \
+ && rm -f helm.tar.gz \
+ && install -m 0755 -o root -g root "linux-${TARGETARCH}/helm" /usr/local/bin \
+ && rm -rf "linux-${TARGETARCH}"
 
 COPY --chown=jenkins:jenkins .terraformrc /home/jenkins
 
